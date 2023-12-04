@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Генератор мемов</title>
+    <link rel="stylesheet" href="./assets/styles/main.css">
+</head>
+
+<header>
+    <span class="header-title">
+        Генератор мемов: создай свой мем
+    </span>
+</header>
+
+<body>
+    <div class="input-wrapper">
+        <div class="download">
+            <input name="file" accept="image/*" type="file" id="input_file" class="input-file">
+            <label for="input_file" class="input-file-button">
+                <span class="input-file-icon-wrapper"><img class="input-file-icon" src="./assets/img/download.svg"
+                        alt="Выбрать файл" width="35"></span>
+                <span class="input-file-button-text">Загрузите картинку</span>
+            </label>
+        </div>
+        <div class="save">
+            <label for="save_file" class="save-file-button">
+                <span class="save-file-icon-wrapper"><img class="save-file-icon" src="./assets/img/save.svg"
+                        alt="Сохранить файл" width="30"></span>
+                <span class="save-file-button-text">Сохранить картинку</span>
+            </label>
+        </div>
+    </div>
+    <div class="main-wrapper">
+        <canvas class="canvas" width="600" height="600"></canvas>
+        <div class="font-setting">
+            <div class="option">
+                <label for="font-select">Стиль шрифта</label>
+                <select id="font-select">
+                    <option value="normal">Стандарт</option>
+                    <option value="italic">Курсив</option>
+                </select>
+            </div>
+            <div class="option">
+                <label>Цвет</label>
+                <input id="color" type="color">
+            </div>
+            <div class="option">
+                <label>Размер</label>
+                <input id="font_size" value="16" type="number">
+            </div>
+            <div class="option">
+                <label>Введите текст</label>
+                <textarea id="textarea" rows="3" cols="15"></textarea>
+            </div>
+            <button class="add-style">Добавить</button>
+            <button class="remove">Удалить</button>
+        </div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>
