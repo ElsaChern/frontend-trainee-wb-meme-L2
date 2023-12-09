@@ -15,6 +15,7 @@ const removeBtn = document.querySelector(".remove");
 let textArr = [];
 let canvasImage;
 let selectedTextElement;
+let id = 0;
 
 // При нажатии на кнопку "добавить" отобразим текст
 addStyleBtn.addEventListener("click", () => applyStyles());
@@ -45,7 +46,7 @@ const applyStyles = () => {
   }
   // При добавлении текста надо очищать поле ввода и убирать лишние пробелы (trim)
   textArr.push({
-    id: textArr.length,
+    id: id,
     font: select.value,
     size: fontSize.value,
     color: color.value,
@@ -53,6 +54,7 @@ const applyStyles = () => {
     x: 180,
     y: 50,
   });
+  id += 1;
 
   clearForm();
   renderImage();
@@ -105,19 +107,14 @@ const renderImage = () => {
       ctx.fillStyle = text.color;
       ctx.font = `${text.font} ${text.size}px Arial`;
       ctx.fillText(text.text, text.x, text.y);
+
+      if (selectedTextElement?.id === text.id) {
+        let width = ctx.measureText(text.text).width;
+        let height = text.size;
+
+        ctx.strokeRect(text.x, text.y - height, width, height);
+      }
     });
-
-    if (selectedTextElement) {
-      let width = ctx.measureText(selectedTextElement.text).width;
-      let height = selectedTextElement.size;
-
-      ctx.strokeRect(
-        selectedTextElement.x,
-        selectedTextElement.y - height,
-        width,
-        height,
-      );
-    }
   };
 };
 
@@ -141,7 +138,7 @@ canvas.addEventListener("mousedown", (event) => {
 
   textArr.forEach((text) => {
     const textWidth = ctx.measureText(text.text).width;
-    const textHeight = Number(text.size);
+    const textHeight = text.size;
 
     if (
       mousePosition.x >= text.x &&
