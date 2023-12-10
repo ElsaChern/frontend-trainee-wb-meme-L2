@@ -20,10 +20,12 @@ let id = 0;
 // При нажатии на кнопку "добавить" отобразим текст
 addStyleBtn.addEventListener("click", () => applyStyles());
 
+// При нажатии на кнопку удалить - удалим выбранный текстовый элемент
 removeBtn.addEventListener("click", () => {
   if (selectedTextElement) {
     textArr.splice(textArr.indexOf(selectedTextElement), 1);
     selectedTextElement = null;
+    removeBtn.style.display = "none";
     renderImage();
   }
 });
@@ -41,16 +43,14 @@ const applyStyles = () => {
   // Добавим сообщение, в случае если текстовое поле пустое
   if (!textarea.value) {
     alert("Введите текст в поле ввода");
-  } else {
-    removeBtn.style.display = "block";
   }
-  // При добавлении текста надо очищать поле ввода и убирать лишние пробелы (trim)
+  // Добавляем текстовый элемент в массив
   textArr.push({
     id: id,
     font: select.value,
     size: fontSize.value,
     color: color.value,
-    text: textarea.value,
+    text: textarea.value.trim(),
     x: 180,
     y: 50,
   });
@@ -85,6 +85,7 @@ inputFile.addEventListener("change", (event) => {
   saveFile.style.display = "block";
 });
 
+// При нажатии на кнопку "сохранить" выполняем действия по сохранению картинки на локальный компьютер
 saveFile.addEventListener("click", () => {
   const anchor = document.createElement("a");
 
@@ -94,6 +95,7 @@ saveFile.addEventListener("click", () => {
   return anchor.click();
 });
 
+// Функция по отрисовке, которую мы вызываем при изменениях
 const renderImage = () => {
   const image = new Image();
 
@@ -103,11 +105,13 @@ const renderImage = () => {
     canvas.height = image.height;
     ctx.drawImage(image, 0, 0);
 
+    // Отрисовываем каждый текст
     textArr.forEach((text) => {
       ctx.fillStyle = text.color;
       ctx.font = `${text.font} ${text.size}px Arial`;
       ctx.fillText(text.text, text.x, text.y);
 
+      // Отрисовываем рамку, если есть выделенный текст
       if (selectedTextElement?.id === text.id) {
         let width = ctx.measureText(text.text).width;
         let height = text.size;
@@ -122,6 +126,7 @@ const renderImage = () => {
 let isDragging = false;
 let dragStartX, dragStartY;
 
+// Функция для определения текущего положения курсора
 const getMouseXY = (canvas, event) => {
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
@@ -132,14 +137,17 @@ const getMouseXY = (canvas, event) => {
   };
 };
 
+// Отслеживание клика по элементу
 canvas.addEventListener("mousedown", (event) => {
   const mousePosition = getMouseXY(canvas, event);
   selectedTextElement = null;
+  removeBtn.style.display = "none";
 
+  // Проходим по каждому тексту и проверяем, попали ли мы в его границы.
+  // Если да, то помечаем текст как перетаскиваемый
   textArr.forEach((text) => {
     const textWidth = ctx.measureText(text.text).width;
     const textHeight = text.size;
-
     if (
       mousePosition.x >= text.x &&
       mousePosition.x <= text.x + textWidth &&
@@ -150,11 +158,13 @@ canvas.addEventListener("mousedown", (event) => {
       dragStartX = mousePosition.x;
       dragStartY = mousePosition.y;
       selectedTextElement = text;
+      removeBtn.style.display = "block";
     }
   });
   renderImage();
 });
 
+// Отслеживание движения элемента
 canvas.addEventListener("mousemove", (event) => {
   if (isDragging) {
     const mousePosition = getMouseXY(canvas, event);
@@ -166,10 +176,13 @@ canvas.addEventListener("mousemove", (event) => {
     dragStartX = mousePosition.x;
     dragStartY = mousePosition.y;
 
+    // При каждом перемещении перерисовываем картинку,
+    // чтобы показывать актуальное расположение элементов на холсте
     renderImage();
   }
 });
 
+// Отслеживание удаления фокуса с элемента
 canvas.addEventListener("mouseup", () => {
   isDragging = false;
 });
